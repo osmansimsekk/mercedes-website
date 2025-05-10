@@ -28,3 +28,19 @@ html {
 body::-webkit-scrollbar {
   display: none;
 }
+
+@layer components {
+  .split {
+    opacity: 0;
+    text-align: center;
+    color: #000;
+    font-size: 10px;
+    letter-spacing: 0.05rem;
+    will-change: transform;
+    color: #000;
+  }
+
+  .split * {
+    will-change: transform;
+  }
+}

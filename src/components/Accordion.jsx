@@ -1,5 +1,10 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger, SplitText } from "gsap/all";
+
+gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const accordionItems = [
   {
@@ -46,17 +51,61 @@ const accordionItems = [
 
 const Accordion = ({ scrollRef }) => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const imageRef = useRef(null);
+  const textRef = useRef(null);
 
   const handleToggle = (index) => {
     setActiveIndex((prevIndex) => (prevIndex === index ? 0 : index));
   };
+
+  useGSAP(() => {
+    gsap.to(textRef.current, {
+      scrollTrigger: {
+        trigger: "#text",
+        start: "top bottom",
+        end: "center top",
+
+        scrub: 1,
+        onEnter: () => {
+          let splitTitle = SplitText.create(textRef.current, {
+            type: "chars",
+          });
+
+          gsap.from(splitTitle.chars, {
+            y: 100,
+            opacity: 0,
+            stagger: {
+              amount: 1,
+            },
+          });
+        },
+      },
+    });
+    return () => {
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    };
+  }, []);
+
+  useGSAP(() => {
+    gsap.set(imageRef.current, { opacity: 0 });
+    gsap.to(imageRef.current, {
+      opacity: 1,
+      delay: 0.1,
+      duration: 0.5,
+      ease: "slow",
+    });
+  }, [activeIndex]);
 
   return (
     <section
       className="w-screen md:pt-50 lg:grid lg:grid-cols-2 relative bg-white font-gidole lg:mt- max-sm:h-[130vh] md:h-[130vh]"
       ref={(el) => (scrollRef.current[3] = el)}
     >
-      <h1 className="absolute lg:top-1/20 pt-10 top-1/20 lg:left-1/2 text-5xl left-1/2 font-tinos lg:pt-20  lg:translate-x-[-50%] translate-x-[-50%] text-gray-800 hidden lg:block w-200">
+      <h1
+        className="absolute lg:top-1/20 pt-10 top-1/20 lg:left-1/2 text-5xl left-1/2 font-tinos lg:pt-20  lg:translate-x-[-50%] translate-x-[-50%] text-gray-800 hidden lg:block w-200"
+        id="text"
+        ref={textRef}
+      >
         Mercedes-Benz ile Geleceğe Yolculuk.
       </h1>
       <h1 className="text-center max-sm:py-20 max-sm:text-2xl max-sm:px-6 font-tinos sm:text-2xl sm:px-6 sm:py-20 max-lg:block hidden">
@@ -65,7 +114,8 @@ const Accordion = ({ scrollRef }) => {
       <div>
         <img
           src={`/images/accordion/image-${activeIndex}.webp`}
-          className="absolute lg:top-1/5 left-1/4 translate-x-[-40%] translate-y-[15%] block max-lg:hidden lg:h-150  "
+          className="absolute lg:top-1/5 left-1/4 translate-x-[-40%] translate-y-[15%] block max-lg:hidden lg:h-150"
+          ref={imageRef}
         />
       </div>
 

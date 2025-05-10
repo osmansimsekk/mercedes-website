@@ -26,7 +26,7 @@ const Footer = () => {
     <footer className="w-screen mx-auto bg-black text-white font-gidole py-10 max-sm:h-[60vh] sm:h-[50vh] md:h-[40vh] px-4">
       <div className="flex gap-10 justify-around items-strecth py-10 bg-black max-sm:px-2">
         {footerData.map((content) => (
-          <ul className="flex flex-col space-y-8">
+          <ul key={content.key} className="flex flex-col space-y-8">
             <>
               <p className="border-b-1 md:text-xl text-md max-sm:text-xs">
                 {content.title}

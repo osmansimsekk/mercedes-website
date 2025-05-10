@@ -25,40 +25,54 @@ const Gallery = ({ scrollRef }) => {
   let nextImage = (currentImage + 1) % IMAGE_COUNT;
 
   useGSAP(() => {
-    document.fonts.ready.then(() => {
-      let splitTitle = SplitText.create(textTitleRef.current, {
-        type: "chars, words",
-      });
+    // let animPlayed = false;
+    ScrollTrigger.create({
+      trigger: scrollRef.current[1],
+      start: "top bottom",
+      end: "center top",
+      scrub: false,
+      onEnter: () => {
+        // if (animPlayed) {
+        //   return;
+        // }
+        // animPlayed = true;
+        gsap.set(textTitleRef.current, { opacity: 1 });
+        gsap.set(textAreaRef.current, { opacity: 1 });
+        let splitTitle = SplitText.create(textTitleRef.current, {
+          type: "chars",
+        });
 
-      gsap.from(splitTitle.chars, {
-        scrollTrigger: {
-          trigger: scrollRef.current[1],
-          end: "bottom center",
-          scrub: false,
-        },
-        y: 100,
-        autoAlpha: 0,
-        stagger: {
-          amount: 1,
-        },
-      });
+        gsap.from(splitTitle.chars, {
+          y: 100,
+          opacity: 0,
+          stagger: {
+            amount: 1,
+          },
+        });
 
-      let splitArea = SplitText.create(textAreaRef.current, {
-        type: " words, lines, chars",
-      });
+        let split;
+        SplitText.create(textAreaRef.current, {
+          type: "words,lines",
 
-      gsap.from(splitArea.lines, {
-        scrollTrigger: {
-          trigger: textAreaRef.current,
-          end: "bottom center",
-          scrub: false,
-        },
-
-        autoAlpha: 0,
-        stagger: 0.5,
-        y: 100,
-      });
+          autoSplit: true,
+          mask: "lines",
+          onSplit: (self) => {
+            split = gsap.from(self.lines, {
+              duration: 1,
+              yPercent: 150,
+              opacity: 0,
+              stagger: 0.5,
+              ease: "expo.out",
+              delay: 0.7,
+            });
+            return split;
+          },
+        });
+      },
     });
+    return () => {
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    };
   }, []);
 
   useGSAP(
@@ -95,14 +109,14 @@ const Gallery = ({ scrollRef }) => {
     >
       <div className="flex flex-col justify-center items-center gap-10 md:pt-30 pt-10">
         <h1
-          className="md:text-5xl text-4xl text-center px-4 max-sm:text-3xl"
+          className="md:text-5xl text-4xl text-center px-4 max-sm:text-3xl opacity-0 transform"
           ref={textTitleRef}
         >
           Mercedes-Benz: Mükemmelliğin Simgesi.
         </h1>
         <div className="md:w-150 max-sm:w-90 sm:w-100">
           <p
-            className="md:text-xl text-md text-center text-gray-800 font-gidole max-sm:text-sm sm:text-sm"
+            className="md:text-xl text-md text-center text-gray-800 font-gidole max-sm:text-sm sm:text-sm opacity-0 transform"
             ref={textAreaRef}
           >
             Mercedes-Benz, yenilikçi teknolojileri, üstün konforu, zarif

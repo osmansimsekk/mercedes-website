@@ -1,17 +1,17 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/all";
+import { ScrollTrigger, SplitText } from "gsap/all";
 import { useRef } from "react";
 import Accordion from "./Accordion";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const Highlights = ({ scrollRef }) => {
   const cardsRef = useRef([]);
+  const textTitleRef = useRef(null);
 
   useGSAP(() => {
     const cards = cardsRef.current;
-
     // ScrollTrigger ile animasyon
     gsap.fromTo(
       cards,
@@ -23,10 +23,24 @@ const Highlights = ({ scrollRef }) => {
         stagger: 0.5,
         ease: "power2.out",
         scrollTrigger: {
-          trigger: "#highlights-section", // Section'ı tetikleyici olarak kullan
-          start: "top center", // Ekranda göründüğü anda başla
-          end: "bottom center", // Bitirme noktası
-          scrub: false, // Scroll ilerlemesine bağlı değil
+          trigger: "#highlights-section",
+          start: "top bottom",
+          end: "center top",
+
+          scrub: 1,
+          onEnter: () => {
+            let splitTitle = SplitText.create(textTitleRef.current, {
+              type: "chars",
+            });
+
+            gsap.from(splitTitle.chars, {
+              y: 100,
+              opacity: 0,
+              stagger: {
+                amount: 1,
+              },
+            });
+          },
         },
       }
     );
@@ -38,11 +52,14 @@ const Highlights = ({ scrollRef }) => {
 
   return (
     <section
-      className="md:h-[100vh] w-screen bg-white md:py-10  max-sm:h-[280vh] sm:h-[280vh]"
+      className="md:h-[110vh] w-screen bg-white md:py-10  max-sm:h-[270vh] sm:h-[280vh]"
       id="highlights-section"
       ref={(el) => (scrollRef.current[2] = el)}
     >
-      <h1 className="text-5xl text-center text-black max-sm:text-3xl max-sm:py-10 sm:py-10 sm:text-4xl">
+      <h1
+        className="md:text-5xl text-center text-black max-sm:text-3xl max-sm:py-10 sm:py-10 sm:text-4xl"
+        ref={textTitleRef}
+      >
         Öne Çıkanlar.
       </h1>
       <div className="w-full min-h-full flex flex-col md:flex-row max-sm:flex-col max-sm:gap-15 md:items-start items-center md:mt-15 md:gap-x-10 md:px-4 md:justify-center sm:gap-15">
