@@ -29,16 +29,18 @@ const Highlights = ({ scrollRef }) => {
 
           scrub: 1,
           onEnter: () => {
-            let splitTitle = SplitText.create(textTitleRef.current, {
-              type: "chars",
-            });
+            document.fonts.ready.then(() => {
+              let splitTitle = SplitText.create(textTitleRef.current, {
+                type: "chars",
+              });
 
-            gsap.from(splitTitle.chars, {
-              y: 100,
-              opacity: 0,
-              stagger: {
-                amount: 1,
-              },
+              gsap.from(splitTitle.chars, {
+                y: 100,
+                opacity: 0,
+                stagger: {
+                  amount: 1,
+                },
+              });
             });
           },
         },

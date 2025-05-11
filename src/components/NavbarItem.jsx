@@ -1,14 +1,10 @@
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import InnerNavItem from "./InnerNavItem";
 
-const NavbarItem = ({ children, innerNav, handleHover }) => {
+const NavbarItem = ({ children, innerNav }) => {
   return (
     <li className="group px-3 py-4">
-      <div
-        className="flex gap-2 cursor-pointer justify-center items-center"
-        onMouseEnter={() => handleHover((prev) => !prev)}
-        onMouseLeave={() => handleHover((prev) => !prev)}
-      >
+      <div className="flex gap-2 cursor-pointer justify-center items-center">
         <button className="relative cursor-pointer text-md">
           {children}
           <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-black transition-all duration-300 group-hover:w-full "></span>

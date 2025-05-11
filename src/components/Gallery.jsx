@@ -32,41 +32,43 @@ const Gallery = ({ scrollRef }) => {
       end: "center top",
       scrub: false,
       onEnter: () => {
-        // if (animPlayed) {
-        //   return;
-        // }
-        // animPlayed = true;
-        gsap.set(textTitleRef.current, { opacity: 1 });
-        gsap.set(textAreaRef.current, { opacity: 1 });
-        let splitTitle = SplitText.create(textTitleRef.current, {
-          type: "chars",
-        });
+        document.fonts.ready.then(() => {
+          // if (animPlayed) {
+          //   return;
+          // }
+          // animPlayed = true;
+          gsap.set(textTitleRef.current, { opacity: 1 });
+          gsap.set(textAreaRef.current, { opacity: 1 });
+          let splitTitle = SplitText.create(textTitleRef.current, {
+            type: "chars",
+          });
 
-        gsap.from(splitTitle.chars, {
-          y: 100,
-          opacity: 0,
-          stagger: {
-            amount: 1,
-          },
-        });
+          gsap.from(splitTitle.chars, {
+            y: 100,
+            opacity: 0,
+            stagger: {
+              amount: 1,
+            },
+          });
 
-        let split;
-        SplitText.create(textAreaRef.current, {
-          type: "words,lines",
+          let split;
+          SplitText.create(textAreaRef.current, {
+            type: "words,lines",
 
-          autoSplit: true,
-          mask: "lines",
-          onSplit: (self) => {
-            split = gsap.from(self.lines, {
-              duration: 1,
-              yPercent: 150,
-              opacity: 0,
-              stagger: 0.5,
-              ease: "expo.out",
-              delay: 0.7,
-            });
-            return split;
-          },
+            autoSplit: true,
+            mask: "lines",
+            onSplit: (self) => {
+              split = gsap.from(self.lines, {
+                duration: 1,
+                yPercent: 150,
+                opacity: 0,
+                stagger: 0.5,
+                ease: "expo.out",
+                delay: 0.7,
+              });
+              return split;
+            },
+          });
         });
       },
     });

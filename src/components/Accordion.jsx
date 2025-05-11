@@ -52,35 +52,38 @@ const accordionItems = [
 const Accordion = ({ scrollRef }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const imageRef = useRef(null);
-  const textRef = useRef(null);
+  const textsRef = useRef([]);
 
   const handleToggle = (index) => {
     setActiveIndex((prevIndex) => (prevIndex === index ? 0 : index));
   };
 
   useGSAP(() => {
-    gsap.to(textRef.current, {
+    gsap.to("#section", {
       scrollTrigger: {
-        trigger: "#text",
+        trigger: scrollRef.current[3],
         start: "top bottom",
         end: "center top",
-
-        scrub: 1,
         onEnter: () => {
-          let splitTitle = SplitText.create(textRef.current, {
-            type: "chars",
-          });
+          document.fonts.ready.then(() => {
+            textsRef.current.forEach((text) => {
+              let splitTitle = SplitText.create(text, {
+                type: "chars",
+              });
 
-          gsap.from(splitTitle.chars, {
-            y: 100,
-            opacity: 0,
-            stagger: {
-              amount: 1,
-            },
+              gsap.from(splitTitle.chars, {
+                y: 100,
+                opacity: 0,
+                stagger: {
+                  amount: 1,
+                },
+              });
+            });
           });
         },
       },
     });
+
     return () => {
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
@@ -103,12 +106,14 @@ const Accordion = ({ scrollRef }) => {
     >
       <h1
         className="absolute lg:top-1/20 pt-10 top-1/20 lg:left-1/2 text-5xl left-1/2 font-tinos lg:pt-20  lg:translate-x-[-50%] translate-x-[-50%] text-gray-800 hidden lg:block w-200"
-        id="text"
-        ref={textRef}
+        ref={(el) => (textsRef.current[0] = el)}
       >
         Mercedes-Benz ile Geleceğe Yolculuk.
       </h1>
-      <h1 className="text-center max-sm:py-20 max-sm:text-2xl max-sm:px-6 font-tinos sm:text-2xl sm:px-6 sm:py-20 max-lg:block hidden">
+      <h1
+        className="text-center md:text-5xl max-sm:py-20 max-sm:text-2xl max-sm:px-6 font-tinos sm:text-2xl sm:px-6 sm:py-20 max-lg:block hidden"
+        ref={(el) => (textsRef.current[1] = el)}
+      >
         Mercedes-Benz ile Geleceğe Yolculuk.
       </h1>
       <div>
